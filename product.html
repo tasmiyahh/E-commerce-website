@@ -65,12 +65,16 @@
 </body>
 <script>
 
-
+    if(window.location.href.indexOf("https") === -1){
+        baseURL = "http://localhost:3000/products"
+    }else{
+       baseURL ="https://ecommerce-website12345.herokuapp.com/product"
+    }
 
     getAllProducts();
 
     function getAllProducts() {
-        axios.get('http://localhost:3000/products')
+        axios.get(`${baseURL} /products`)
             .then(function (response) {
                 // handle success
                 console.log(response.data.data);
