@@ -15,11 +15,11 @@
 
         }
 
-        .productList{
-          display: flex;
-          justify-content: space-around;
-          
-          flex-wrap: wrap;
+        .productList {
+            display: flex;
+            justify-content: space-around;
+
+            flex-wrap: wrap;
         }
 
         div>div {
@@ -44,9 +44,16 @@
         div>div:hover {
             box-shadow: 2px 2px 3px 5px #C7C7C7;
         }
-        p{
+
+        p {
             padding: 0;
             margin: 7px;
+        }
+
+        button {
+            color: red;
+            border: red;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -58,29 +65,37 @@
     </a>
     <a href="./index.html">index.html</a>
     <div class="productList">
-        
-            
+
+
     </div>
 
 </body>
 <script>
 
-    let baseURL;
+    let baseUrl;
+//    console.log(baseURL);
+//     if (window.location.href.indexOf("https") === -1) {
+//        baseURL = "http://localhost:3000/products"
+//     } else {
+//        baseURL= "https://ecommerce-website12345.herokuapp.com/products"
+//     }
 
-    if(window.location.href.indexOf("https") === -1){
-         "http://localhost:3000/products"
-    }else{
-       "https://ecommerce-website12345.herokuapp.com/product"
-    }
+    if (window.location.href.indexOf("https") === -1) {
+            baseUrl = "http://localhost:3000";
+        } else {
+            baseUrl = "https://mongodb-crud-ecommerce-store.herokuapp.com";
+        }
 
     getAllProducts();
 
     function getAllProducts() {
-        axios.get(`${baseURL} /products`)
+        axios.get(baseUrl +"/products")
             .then(function (response) {
                 // handle success
                 console.log(response.data.data);
                 var productList = document.querySelector(".productList");
+
+                productList.innerHTML = "";
 
                 response.data.data.map(eachproduct => {
                     productList.innerHTML += `
@@ -89,8 +104,9 @@
                     <p> ${eachproduct.productName}</p>
                  <p><span>${eachproduct.currencyCode}</span><span>${eachproduct.productPrice}</span></p>
                  <p>${eachproduct.numberOfSale}</p>
-               <p>${ (eachproduct.isFreeShipping)? "free shipping" : "" }</p>
+               <p>${(eachproduct.isFreeShipping) ? "free shipping" : ""}</p>
                  <p>${eachproduct.shopName}</p>
+                 <button class="delete" onclick="deleteProduct('${eachproduct._id}')">Delete</button> 
         </div>`
                 })
 
@@ -106,6 +122,29 @@
                 // always executed
             });
     }
+
+
+    function deleteProduct(_id) {
+
+        
+       
+        console.log("productid" + _id);
+     
+
+      
+         
+        axios.delete(`http://localhost:3000/product/${_id}`)  
+      .then(res => {  
+        console.log('delete successful');  
+        getAllProducts();
+        
+       
+      }) 
+      .catch(function (error) {
+                // handle error
+                console.log('error');
+            }) 
+        }
 
 </script>
 

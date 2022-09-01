@@ -55,18 +55,18 @@ app.post('/product', (req, res) => {
         isFreeShipping: body.isFreeShipping,
         shopName: body.shopName
     })
- 
-    newproduct.save( (err, result)=>{
-    
+
+    newproduct.save((err, result) => {
+
         if (!err) {
             res.send({
                 message: "product is created"
             })
             console.log(result, "product is created in database")
         } else {
-           res.send({message : "db error in saving product"});
-           console.log()
-           
+            res.send({ message: "db error in saving product" });
+            console.log()
+
         }
 
 
@@ -75,28 +75,53 @@ app.post('/product', (req, res) => {
 })
 
 
-app.get("/products",  (req, res) => {
-    productModel.find({} , (err , result)=>{
-        if(err){
+app.get("/products", (req, res) => {
+    productModel.find({}, (err, result) => {
+        if (err) {
             res.send({
-                message : "error in getting all products"
+                message: "error in getting all products"
             })
-            console.log(err , "error in db")
+            console.log(err, "error in db")
             return;
-        }else{
+        } else {
             res.send({
                 message: "got all products",
-                data :result
+                data: result
             })
         }
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     )
 })
+
+
+app.delete("/product/:id", (req, res) => {
+    let id = req.params.id;
+    
+
+    productModel.findByIdAndDelete(id, function (err, result) {
+        if (err) {
+            console.log(err)
+            res.send({
+                message : "error in db"
+            })
+            return;
+        }
+        else {
+            console.log("Deleted product: ", result);
+            res.send({
+                message : "deleted"
+            })
+
+            return;
+        }
+    });
+
+});
 
 
 app.listen(port, () => {
