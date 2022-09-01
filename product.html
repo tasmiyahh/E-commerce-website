@@ -65,10 +65,12 @@
 </body>
 <script>
 
+    let baseURL;
+
     if(window.location.href.indexOf("https") === -1){
-        baseURL = "http://localhost:3000/products"
+         "http://localhost:3000/products"
     }else{
-       baseURL ="https://ecommerce-website12345.herokuapp.com/product"
+       "https://ecommerce-website12345.herokuapp.com/product"
     }
 
     getAllProducts();
