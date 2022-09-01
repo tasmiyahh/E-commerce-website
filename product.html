@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #F2F2F2;
+
+        }
+
+        .productList{
+          display: flex;
+          justify-content: space-around;
+          
+          flex-wrap: wrap;
+        }
+
+        div>div {
+            display: flex;
+            border: 2px solid white;
+            flex-direction: column;
+            width: 270px;
+            padding: 5px;
+            margin: 10px;
+            background-color: white;
+            border-radius: 5px;
+            flex-wrap: wrap;
+        }
+
+        div>p>span:last-child {
+            font-size: 25px;
+            font-family: sans-serif;
+            padding: 3px;
+            color: black;
+        }
+
+        div>div:hover {
+            box-shadow: 2px 2px 3px 5px #C7C7C7;
+        }
+        p{
+            padding: 0;
+            margin: 7px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ECOMMERCE WEBSITE</h1>
+    <a href="./product.html">
+        product.html
+    </a>
+    <a href="./index.html">index.html</a>
+    <div class="productList">
+        
+            
+    </div>
+
+</body>
+<script>
+
+
+
+    getAllProducts();
+
+    function getAllProducts() {
+        axios.get('http://localhost:3000/products')
+            .then(function (response) {
+                // handle success
+                console.log(response.data.data);
+                var productList = document.querySelector(".productList");
+
+                response.data.data.map(eachproduct => {
+                    productList.innerHTML += `
+                 <div>
+                    <img src="./images/iphone.jpg" alt="iphone">
+                    <p> ${eachproduct.productName}</p>
+                 <p><span>${eachproduct.currencyCode}</span><span>${eachproduct.productPrice}</span></p>
+                 <p>${eachproduct.numberOfSale}</p>
+               <p>${ (eachproduct.isFreeShipping)? "free shipping" : "" }</p>
+                 <p>${eachproduct.shopName}</p>
+        </div>`
+                })
+
+
+
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+    }
+
+</script>
+
+</html>
