@@ -141,7 +141,7 @@
 
 
 
-        axios.delete(`${baseUrl}/product/${productId}`)
+        axios.delete(`${baseUrl}/product/${_id}`)
             .then(res => {
                 console.log('delete successful');
                 getAllProducts();
