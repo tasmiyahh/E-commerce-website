@@ -50,10 +50,12 @@
             margin: 7px;
         }
 
-        button {
+        .delete,
+        .edit {
             color: red;
             border: red;
             border-radius: 3px;
+            margin: 3px;
         }
     </style>
 </head>
@@ -69,27 +71,32 @@
 
     </div>
 
+
+    <div id="updateProduct">
+
+    </div>
+
 </body>
 <script>
 
     let baseUrl;
-//    console.log(baseURL);
-//     if (window.location.href.indexOf("https") === -1) {
-//        baseURL = "http://localhost:3000/products"
-//     } else {
-//        baseURL= "https://ecommerce-website12345.herokuapp.com/products"
-//     }
+    //    console.log(baseURL);
+    //     if (window.location.href.indexOf("https") === -1) {
+    //        baseURL = "http://localhost:3000/products"
+    //     } else {
+    //        baseURL= "https://ecommerce-website12345.herokuapp.com/products"
+    //     }
 
     if (window.location.href.indexOf("https") === -1) {
-            baseUrl = "http://localhost:3000";
-        } else {
-            baseUrl = "https://ecommerce-website12345.herokuapp.com";
-        }
+        baseUrl = "http://localhost:3000";
+    } else {
+        baseUrl = "https://ecommerce-website12345.herokuapp.com";
+    }
 
     getAllProducts();
 
     function getAllProducts() {
-        axios.get(baseUrl +"/products")
+        axios.get(baseUrl + "/products")
             .then(function (response) {
                 // handle success
                 console.log(response.data.data);
@@ -99,14 +106,15 @@
 
                 response.data.data.map(eachproduct => {
                     productList.innerHTML += `
-                 <div>
+         <div>
                     <img src="./images/iphone.jpg" alt="iphone">
                     <p> ${eachproduct.productName}</p>
                  <p><span>${eachproduct.currencyCode}</span><span>${eachproduct.productPrice}</span></p>
                  <p>${eachproduct.numberOfSale}</p>
-               <p>${(eachproduct.isFreeShipping) ? "free shipping" : ""}</p>
+                 <p>${(eachproduct.isFreeShipping) ? "free shipping" : ""}</p>
                  <p>${eachproduct.shopName}</p>
                  <button class="delete" onclick="deleteProduct('${eachproduct._id}')">Delete</button> 
+                 <button class="edit" onclick="editProduct('${eachproduct._id}')">Edit</button>
         </div>`
                 })
 
@@ -126,25 +134,123 @@
 
     function deleteProduct(_id) {
 
-        
-       
-        console.log("productid" + _id);
-     
 
-      
-         
-        axios.delete(`http://localhost:3000/product/${_id}`)  
-      .then(res => {  
-        console.log('delete successful');  
-        getAllProducts();
-        
-       
-      }) 
-      .catch(function (error) {
+
+        console.log("productid" + _id);
+
+
+
+
+        axios.delete(`http://localhost:3000/product/${_id}`)
+            .then(res => {
+                console.log('delete successful');
+                getAllProducts();
+
+
+            })
+            .catch(function (error) {
                 // handle error
                 console.log('error');
-            }) 
-        }
+            })
+    }
+
+
+    function editProduct(id) {
+        console.log('id :', id);
+
+
+        // Make a request for a user with a given ID
+        axios.get(`${baseUrl}/product/${id}`)
+            .then(function (response) {
+                // handle success
+                console.log('product', response.data.data);
+
+                let product = response.data.data;
+
+                document.querySelector("#updateProduct").innerHTML = `
+
+       <form onsubmit="completeUpdate(); return false">
+
+        <label for="productId">Product Id</label>
+        <input type="text" id="productId" value="${product._id}" disabled>
+                    <br>
+      <label for="productName">productName</label>
+       <input type="text" id="productName" value="${product.productName}" ><br>
+
+        <label for="productPrice">productPrice</label>
+         <input type="number" id="productPrice" value="${product.productPrice}"> <br>
+
+      <label for="currencyCode">currencyCode</label>
+        <input type="text" id="currencyCode" value="${product.currencyCode}"> <br>   
+
+        <label for="numberOfSale">numberOfSale</label>
+    <input type="number" id="numberOfSale" value="${product.numberOfSale}"> <br>
+
+       <label for="rating">rating</label>
+      <input type="number" id="rating" value="${product.rating}"> <br>
+
+       <label for="isFreeShipping">isFreeShipping</label>
+      <select name="isFreeShipping" id="isFreeShipping" >isFreeShipping
+
+     <option value="yes" name="isFreeShipping" ${(!product.isFreeShipping) ? "selected" : ""} value="true">yes</option>
+     <option value="no" name="isFreeShipping" ${(!product.isFreeShipping) ? "selected" : ""} value="false">no</option>
+       </select>
+ 
+      <label for="shopName">shopName</label>
+      <input type="text" id="shopName" value="${product.shopName}"> <br>
+
+      <button type="submit">update</button>
+
+
+    </form>`
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log('error', error);
+            })
+            .then(function () {
+                // always executed
+            });
+
+
+    }
+
+
+    function completeUpdate() {
+let productId = document.querySelector("#productId").value;
+let productName = document.querySelector("#productName").value;
+let productPrice = document.querySelector("#productPrice").value;
+let currencyCode = document.querySelector("#currencyCode").value;
+let numberOfSale = document.querySelector("#numberOfSale").value;
+let rating = document.querySelector("#rating").value;
+let isFreeShipping = document.querySelector("#isFreeShipping").value;
+let shopName = document.querySelector("#shopName").value;
+
+
+
+
+
+axios.put(`${baseUrl}/product/${productId}`, {
+    productName: productName,
+    productPrice: productPrice,
+    currencyCode: currencyCode,
+    numberOfSale: numberOfSale,
+    rating: rating,
+    isFreeShipping: isFreeShipping,
+    shopName: shopName
+})
+    .then(function (response) {
+        console.log(response.data);
+        document.querySelector("#updateProduct").innerHTML = ``;
+        getAllProducts();
+    })
+    .catch(function (error) {
+        console.log(error.response.data.message);
+   
+    })
+}
+
 
 </script>
 

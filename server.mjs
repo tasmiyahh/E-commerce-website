@@ -99,6 +99,30 @@ app.get("/products", (req, res) => {
 })
 
 
+app.get("/product/:id", (req, res) => {
+    productModel.findOne({id:req.params.id}, (err, result) => {
+        if (err) {
+            res.send({
+                message: "error in getting  product"
+            })
+            console.log(err, "error in db")
+            return;
+        } else {
+            res.send({
+                message: "got  product",
+                data: result
+            })
+        }
+    }
+
+
+
+
+
+    )
+})
+
+
 app.delete("/product/:id", (req, res) => {
     let id = req.params.id;
     
@@ -122,6 +146,25 @@ app.delete("/product/:id", (req, res) => {
     });
 
 });
+
+app.put("/product/:id", (req, res) => {
+    let id = req.params.id;
+    let body = req.body;
+    productModel.findByIdAndUpdate(id, body,{} ,(err, result) => {
+        if(!err){
+       console.log('updated product' , result);
+       res.send({
+         message : "updated"
+       })
+    }else{
+        res.status(500).send({
+            message : "db error"
+
+        })
+    }
+});
+
+})
 
 
 app.listen(port, () => {

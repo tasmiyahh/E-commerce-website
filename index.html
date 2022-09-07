@@ -52,14 +52,13 @@
     <script>
 
       //  let baseURL = "http://localhost:3000/product";
-        let baseURL ;
-        console.log(window.location.href);
+      let baseUrl;
+      if (window.location.href.indexOf("https") === -1) {
+        baseUrl = "http://localhost:3000";
+    } else {
+        baseUrl = "https://ecommerce-website12345.herokuapp.com";
+    }
 
-        if(window.location.href.indexOf('https') === -1){
-             baseURL = "http://localhost:3000/product";
-        }else{
-             baseURL = "https://ecommerce-website12345.herokuapp.com/product"
-        }
         function createProduct() {
 
             let productName = document.querySelector("#productName").value;
@@ -74,7 +73,7 @@
 
 
 
-            axios.post("http://localhost:3000/product", {
+            axios.post(`${baseUrl}/product`, {
                 productName: productName,
                 productPrice: productPrice,
                 currencyCode: currencyCode,
